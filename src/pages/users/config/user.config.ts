@@ -3,13 +3,13 @@ import type { ITeam } from 'src/interfaces/ITeam';
 export const userConfig: ITeam[] = [
   {
     id: 1,
-    name: 'John Doe',
-    image: 'https://picsum.photos/200/300',
-    description: 'Desenvolvedor Frontend',
-    role: 'Frontend Developer',
+    name: 'Gabriel Godoi',
+    image: 'https://avatars.githubusercontent.com/u/110495432?s=400&u=1cbaec160122830af35f4eae24a9d3a1f5179ee1&v=4',
+    description: 'Desenvolvedor Fullstack',
+    role: 'Fullstack Developer',
     social: {
-      github: 'github.com/johndoe',
-      linkedin: 'linkedin.com/in/johndoe',
+      github: 'https://github.com/gabrielgodoi987?tab=repositories',
+      linkedin: 'https://www.linkedin.com/in/gabriel-godoi-120770297/',
     },
   },
   {

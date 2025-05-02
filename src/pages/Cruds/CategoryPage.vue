@@ -1,13 +1,13 @@
 <template>
   <q-page class="q-pa-md">
     <div>
-      <div class="text-h3 q-pa-md">Administração - brinquedos</div>
+      <div class="q-pa-md text-h3">Administração - Categoria</div>
     </div>
 
     <section>
-      <ToysTable />
+      <CategoryTable />
       <div class="w-full">
-        <AbsoluteBottomLeftButton label="Adicionar" color="secondary" width="350px" />
+        <AbsoluteBottomLeftButton label="Adicionar Categoria" color="secondary" width="350px" />
       </div>
     </section>
   </q-page>
@@ -15,8 +15,7 @@
 
 <script lang="ts" setup>
 import AbsoluteBottomLeftButton from 'src/components/AbsoluteBottomLeftButton.vue';
-import ToysTable from './toys/ToysTable.vue';
-
+import CategoryTable from './category/CategoryTable.vue';
 
 </script>
 

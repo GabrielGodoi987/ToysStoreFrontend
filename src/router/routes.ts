@@ -26,6 +26,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/ToyPage.vue'),
       },
       {
+        path: '/admin/toys',
+        name: 'admin-toys',
+        component: () => import("pages/Cruds/ProductPage.vue")
+      },
+      {
+        path: '/admin/categories',
+        name: 'admin-categories',
+        component: () => import("pages/Cruds/CategoryPage.vue")
+      },
+      {
         path: '/team',
         name: 'team',
         component: () => import('pages/TeamPage.vue'),

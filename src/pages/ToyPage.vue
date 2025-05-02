@@ -1,12 +1,12 @@
 <template>
-  <div class="q-pa-md">
+  <q-page class="q-pa-md">
     <q-breadcrumbs class="text-grey-8 q-mb-md">
       <q-breadcrumbs-el label="Catálogo" />
       <q-breadcrumbs-el label="Bonecos" />
       <q-breadcrumbs-el :label="toy?.name" class="text-bold" />
     </q-breadcrumbs>
 
-    <div class="row q-col-gutter-xl">
+    <main class="row q-col-gutter-xl" v-if="toy">
       <!-- Coluna da imagem e miniaturas -->
       <div class="col-12 col-md-5">
         <div class="column items-center">
@@ -14,30 +14,39 @@
             <q-tooltip>Favoritar</q-tooltip>
           </q-btn>
 
-          <!--
-          <q-img
+          <div v-if="toy.photos.length > 0">
+            <q-img :src="toy.photos[0]?.path" style="max-height: 450px; max-width: 100%; object-fit: contain"
+              class="q-mb-md" />
 
-            :src="toy?.photos"
-            style="max-height: 220px; max-width: 100%; object-fit: contain"
-            class="q-mb-md"
-          />
-
-          <div class="row q-col-gutter-sm justify-center">
-            <q-img
-              v-for="(img, index) in toy?.photos ?? [toy?.photos]"
-              :key="index"
-              :src="img"
-              style="width: 60px; height: 60px; object-fit: contain"
-              class="rounded-borders shadow-1"
-            />
+            <div class="row q-col-gutter-sm justify-center">
+              <q-img v-for="(img, index) in toy?.photos ?? [toy?.photos]" :key="index" :src="img.path"
+                style="width: 100px; height: 100px; object-fit: contain" class="rounded-borders shadow-1" />
+            </div>
           </div>
-          -->
+
+          <div v-else>
+            <q-img
+              src="https://toymania.vtexassets.com/arquivos/ids/965823-1200-auto?v=637871976187200000&width=1200&height=auto&aspect=true"
+              style="max-height: 450px; max-width: 100%; object-fit: contain" class="q-mb-md" />
+
+            <div class="row q-col-gutter-sm justify-center q-gutter-lg">
+              <q-img
+                src="https://toymania.vtexassets.com/arquivos/ids/965823-1200-auto?v=637871976187200000&width=1200&height=auto&aspect=true"
+                style="width: 100px; height: 100px; object-fit: contain" class="rounded-borders shadow-1" />
+              <q-img
+                src="https://toymania.vtexassets.com/arquivos/ids/965823-1200-auto?v=637871976187200000&width=1200&height=auto&aspect=true"
+                style="width: 100px; height: 100px; object-fit: contain" class="rounded-borders shadow-1" />
+              <q-img
+                src="https://toymania.vtexassets.com/arquivos/ids/965823-1200-auto?v=637871976187200000&width=1200&height=auto&aspect=true"
+                style="width: 100px; height: 100px; object-fit: contain" class="rounded-borders shadow-1" />
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Coluna do conteúdo -->
       <div class="col-12 col-md-7">
-        <div class="text-h6 text-weight-bold q-mb-xs">{{ toy?.name }}</div>
+        <div class="text-h6 text-weight-bold q-mb-xs">{{ toy.name }}</div>
         <div class="row items-center q-mb-sm">
           <q-icon name="star" color="yellow" size="20px" v-for="n in 5" :key="n" />
           <span class="q-ml-sm text-weight-bold">5.0</span>
@@ -45,36 +54,39 @@
         </div>
 
         <div class="text-body1 text-grey-8 q-mb-md" style="max-width: 500px;">
-          Brinquedos Com o boneco do Vaqueiro Woody os pequenos vão poder recriar as cenas dos filmes
-          e imaginar diversas aventuras com seus personagens favoritos!
+          {{ toy.description }}
         </div>
 
         <div class="text-h6 text-green text-weight-bold q-mb-lg">
-          R$ {{ toy?.price.toFixed(2) }}
+          R$ {{ toy.price }}
         </div>
-
+      </div>
+      <!--Parte de detalhes do produto-->
+      <section>
         <div class="text-subtitle2 text-grey-8 text-weight-bold q-mb-xs">
           Detalhes do produto
         </div>
-        <div class="text-caption q-mb-sm">
-          Boneco woody toy story – líder brinquedos
+        <div class="text-h6 q-mb-sm">
+          {{ toy.name }} – {{ toy.description }}
         </div>
         <div class="text-body2 q-mb-md">
-          Ele é todo em vinil e tem articulação nos braços e cintura. Com o Cowboy Woody a diversão está garantida!
+          {{ toy.shortDescription }}
         </div>
 
         <div class="text-subtitle2 text-grey-8 text-weight-bold q-mb-xs">ESPECIFICAÇÕES:</div>
         <ul class="text-body2 q-mb-lg">
-          <li>Recomendado à partir de 03 anos</li>
-          <li>Altura aprox do boneco: 17 cm</li>
-          <li>Filme: Toy Story</li>
-          <li>Franquia: Disney</li>
+          <li v-for="(i, index) in toy.specifications" :key="index">
+            {{ i }}
+          </li>
         </ul>
 
         <q-btn flat label="mais..." class="text-grey-6" />
-      </div>
-    </div>
-  </div>
+      </section>
+    </main>
+    <main v-else>
+      <div class="text-h3 q-pa-lg text-weight-bold">Brinquedo não encontrado</div>
+    </main>
+  </q-page>
 </template>
 
 
