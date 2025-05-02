@@ -8,23 +8,28 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'home',
-        component: () => import('pages/HomePage.vue')
+        component: () => import('pages/HomePage.vue'),
       },
       {
         path: '/catalog',
         name: 'catalog',
-        component: () => import('pages/CatalogPage.vue')
+        component: () => import('pages/CatalogPage.vue'),
       },
       {
         path: '/catalog/:id',
         name: 'product',
-        component: () => import('pages/ProductsPage.vue')
+        component: () => import('pages/ProductsPage.vue'),
+      },
+      {
+        path: '/toy/:id',
+        name: 'toy',
+        component: () => import('pages/ToyPage.vue'),
       },
       {
         path: '/team',
         name: 'team',
-        component: () => import('pages/TeamPage.vue')
-      }
+        component: () => import('pages/TeamPage.vue'),
+      },
     ],
   },
 

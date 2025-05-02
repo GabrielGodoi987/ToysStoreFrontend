@@ -19,7 +19,7 @@ export class ToysService {
       throw error; // Rethrow the error to handle it in the calling code
     }
   }
-  public async getById(id: string) {
+  public async getById(id: number) {
     try {
       const response = await this.axiosApi.get(`${this.path}/${id}`);
       return response;
