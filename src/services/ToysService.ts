@@ -1,0 +1,40 @@
+import type { AxiosInstance } from 'axios';
+import { api } from 'src/boot/axios';
+
+export class ToysService {
+  private axiosApi: AxiosInstance;
+  private path: string;
+
+  constructor(path: string) {
+    this.axiosApi = api;
+    this.path = path;
+  }
+
+  public async getAll() {
+    try {
+      const response = await this.axiosApi.get(this.path);
+      return response;
+    } catch (error) {
+      console.error('Error fetching all toys:', error);
+      throw error; // Rethrow the error to handle it in the calling code
+    }
+  }
+  public async getById(id: string) {
+    try {
+      const response = await this.axiosApi.get(`${this.path}/${id}`);
+      return response;
+    } catch (error) {
+      console.error('Error fetching toy by ID:', error);
+      throw error; // Rethrow the error to handle it in the calling code
+    }
+  }
+  public async getByCategoryId(categoryId: number) {
+    try {
+      const response = await this.axiosApi.get(`${this.path}/category/${categoryId}`);
+      return response;
+    } catch (error) {
+      console.error('Error fetching toys by category ID:', error);
+      throw error; // Rethrow the error to handle it in the calling code
+    }
+  }
+}
