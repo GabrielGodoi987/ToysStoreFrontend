@@ -1,5 +1,5 @@
 <template>
-   <div class="q-pa-md">
+  <div class="q-pa-md">
     <q-table flat bordered :rows="rows" :columns="columns" row-key="id">
       <template v-slot:body-cell-edit="props">
         <q-td :props="props">
@@ -46,12 +46,10 @@ const fetchToys = async () => {
   }
 };
 
-onMounted(async () =>{
+onMounted(async () => {
   rows.value = await fetchToys();
   console.log(rows.value);
 })
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -68,6 +68,7 @@ export default defineConfigWithVueTs(
     rules: {
       'prefer-promise-reject-errors': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      //'@typescript-eslint/consistent-type-imports': 'off',
 
       // allow debugger during development only
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
