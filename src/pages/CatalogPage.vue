@@ -4,8 +4,8 @@
       <div class="text-h3 text-weight-bolder">Catálogo</div>
     </div>
     <section class="row justify-center items-start q-gutter-lg q-mt-xl">
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3" v-for="i in categories" :key="i.id">
-        <div @click="goTo(i.id)" class="cursor-pointer">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" v-for="i in categories" :key="i.id || 0">
+        <div @click="goTo(i.id || 0)" class="cursor-pointer">
           <q-img :src="i.url" />
           <div class="text-center text-h5 text-weight-bolder q-pa-md">
             {{ i.name }}

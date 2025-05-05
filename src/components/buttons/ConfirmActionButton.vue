@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <q-btn class="col-6 q-pa-md" :label="label" :color="color" rounded />
-  </div>
+  <q-btn class="col-6 q-pa-md" :label="label" :color="color" rounded />
 </template>
 
 <script lang="ts" setup>

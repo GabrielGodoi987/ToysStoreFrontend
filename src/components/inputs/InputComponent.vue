@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-input
-      v-model="data"
+      v-model="model"
       standout="bg-transparent text-black"
       :label="label"
       :hint="hint"
@@ -21,11 +21,7 @@ defineProps({
     required: true
   }
 })
-const data = defineModel('model', {
-  type: String,
-  default: '',
-  required: true
-});
+const model = defineModel<any>();
 </script>
 
 <style></style>
