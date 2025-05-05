@@ -35,14 +35,14 @@
   <section>
     <CardModal title="Editar Produto" v-model:is-open="editDialog">
       <template #content>
-        <form>
+        <form @submit.prevent="editToy">
           <div class="q-gutter-md">
             <InputComponent label="Título do Produto" hint="Título" v-model="toy.name" />
             <InputComponent label="Categoria do Produto" hint="Categoria" v-model="toy.categoryId.name" />
             <InputComponent label="Preço do Produto" hint="Preço" v-model="toy.price" />
           </div>
-          <div class="q-mt-md flex justify-center">
-            <ConfirmActionButton label="Salvar" color="secondary" type="submit" class="text-white" />
+          <div class="q-mt-md row justify-center">
+            <ConfirmActionButton label="Salvar" color="secondary" type="submit" class="text-white" @click="editToy" />
           </div>
         </form>
       </template>
@@ -53,12 +53,12 @@
   <section>
     <CardModal title="Deletar categoria" v-model:is-open="deleteDialog">
       <template #content>
-        <form>
+        <form @submit.prevent="deleteToy">
           <div class="text-h5 text-weight-light">
             Tem certeza que quer deletar a categoria {{ toy.categoryId.name }}?
           </div>
           <div class="row justify-center q-mt-xl">
-            <ConfirmActionButton label="Excluir" color="negative" />
+            <ConfirmActionButton label="Excluir" color="negative" @click="deleteToy" />
           </div>
         </form>
       </template>
@@ -69,15 +69,18 @@
   <section>
     <CardModal title="Adicionar Produto" v-model:is-open="createDialog">
       <template #content>
-        <div class="q-gutter-md">
-          <InputComponent label="Título do Produto" hint="Título" v-model:model="toy.name" />
-          <InputComponent label="Categoria do Produto" hint="Categoria" v-model:model="toy.categoryId.name" />
-          <InputComponent label="Preço do Produto" hint="Preço" v-model:model="toy.price" />
-        </div>
+        <form @submit.prevent="createToy">
+          <div class="q-gutter-md">
+            <InputComponent label="Título do Produto" hint="Título" v-model:model="toy.name" />
+            <InputComponent label="Categoria do Produto" hint="Categoria" v-model:model="toy.categoryId.name" />
+            <InputComponent label="Preço do Produto" hint="Preço" v-model:model="toy.price" />
+          </div>
 
-        <div class="q-mt-md flex justify-center">
-          <ConfirmActionButton label="Adicionar" color="secondary" type="submit" class="text-white" />
-        </div>
+          <div class="q-mt-md row justify-center">
+            <ConfirmActionButton label="Adicionar" color="secondary" type="submit" class="text-white"
+              @click="createToy" />
+          </div>
+        </form>
       </template>
     </CardModal>
   </section>
@@ -94,7 +97,7 @@ import InputComponent from 'src/components/inputs/InputComponent.vue';
 import ConfirmActionButton from 'src/components/buttons/ConfirmActionButton.vue';
 
 const rows = ref<IToys[]>([]);
-const toysService = new ToysService('/toys');
+const toysService: ToysService = new ToysService('/toys');
 const createDialog = defineModel('createDialog', {
   type: Boolean,
   default: false,
@@ -173,19 +176,89 @@ const openDeleteDialog = (id: number) => {
     })
   }
 }
-/*
-const createToy = () => {
+const editToy = async () => {
+  if (toy.value.id == null || toy.value.name == '') {
+    Notify.create({
+      message: "Digite um nome válido para o brinquedo",
+      caption: "O brinquedo foi enviado vazio, o sistema não aceita isso",
+      color: 'warning',
+      position: "top-right",
+      timeout: 2000
+    })
+    editDialog.value = false;
+    return;
+  }
+  const res = await toysService.updateToy(toy.value.id, toy.value)
+  if (res.status !== 200) {
+    Notify.create({
+      message: "Erro ao editar novo brinquedo",
+      color: "negative",
+      position: "top-left",
+      timeout: 200
+    })
+    editDialog.value = false
+    return;
+  }
 
+  Notify.create({
+    message: 'Brinquedo editado com sucesso',
+    color: "positive",
+    position: 'top-left',
+    timeout: 2000
+  })
+  editDialog.value = false;
 }
 
-const editToy = () => {
-
+const createToy = async () => {
+  const res = await toysService.createToy(toy.value);
+  if (res.status !== 200) {
+    Notify.create({
+      message: "Erro ao criar novo brinquedo",
+      color: "negative",
+      position: "top-left",
+      timeout: 200
+    })
+    createDialog.value = false
+    return;
+  }
+  rows.value.push(res.data);
+  Notify.create({
+    message: 'Brinquedo criado com sucesso',
+    color: "positive",
+    position: 'top-left',
+    timeout: 2000
+  })
+  createDialog.value = false;
 }
 
-const deleteToy = () => {
 
+const deleteToy = async () => {
+  if (toy.value.id == null) {
+    return;
+  }
+  const res = await toysService.deleteOneToy(toy.value.id);
+  if (res.status !== 204) {
+    Notify.create({
+      message: "Erro ao deletar brinquedo",
+      color: "negative",
+      position: "top-left",
+      timeout: 200
+    })
+    deleteDialog.value = false
+    return;
+  }
+  const index = rows.value.findIndex(e => e.id == toy.value.id);
+  rows.value.splice(index, 1)
+  Notify.create({
+    message: 'Brinquedo deletado com sucesso',
+    color: "positive",
+    position: 'top-left',
+    timeout: 2000
+  })
+  deleteDialog.value = false;
 }
-*/
+
+
 
 onMounted(async () => {
   rows.value = await fetchToys();

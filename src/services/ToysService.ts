@@ -1,5 +1,6 @@
 import type { AxiosInstance } from 'axios';
 import { api } from 'src/boot/axios';
+import type { IToys } from 'src/interfaces/IToys';
 
 export class ToysService {
   private axiosApi: AxiosInstance;
@@ -35,6 +36,46 @@ export class ToysService {
     } catch (error) {
       console.error('Error fetching toys by category ID:', error);
       throw error; // Rethrow the error to handle it in the calling code
+    }
+  }
+
+  public async createToy(toy: IToys) {
+    try {
+      const response = await this.axiosApi.post(this.path, toy);
+      return response;
+    }  catch (error) {
+      console.error('Error updating category:', error);
+      throw error;
+    }
+  }
+
+  public async updateToy(id: number, toy: IToys) {
+    try {
+      const response = await this.axiosApi.patch(`${this.path}/${id}`, toy);
+      return response;
+    }  catch (error) {
+      console.error('Error updating category:', error);
+      throw error;
+    }
+  }
+
+  public async deleteOneToy(id: number) {
+    try {
+      const response = await this.axiosApi.delete(`${this.path}/${id}`);
+      return response;
+    }  catch (error) {
+      console.error('Error updating category:', error);
+      throw error;
+    }
+  }
+
+  public async deleteToys(ids: number[]) {
+    try {
+      const response = await this.axiosApi.delete(`${this.path}`, { data: { ids } });
+      return response;
+    }  catch (error) {
+      console.error('Error updating category:', error);
+      throw error;
     }
   }
 }

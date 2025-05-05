@@ -147,7 +147,7 @@ const createCategory = async () => {
     timeout: 2000
   })
 
-  rows.value.push(category.value)
+  rows.value.push(res.data)
 
   createDialog.value = false;
 
