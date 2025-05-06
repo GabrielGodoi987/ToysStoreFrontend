@@ -1,5 +1,6 @@
 <template>
   <main class="q-pa-md">
+    {{ toy }}
     <q-table flat bordered :rows="rows" :columns="columns" row-key="id">
       <template v-slot:body-cell-edit="props">
         <q-td :props="props">
@@ -12,37 +13,31 @@
     </q-table>
   </main>
 
-  <!--dialog de criar brinquedo-->
-  <section>
-    <CardModal title="Adicionar Produto" v-model:is-open="createDialog">
-      <template #content>
-        <form>
-          <div class="q-gutter-md">
-            <InputComponent label="Título do Produto" hint="Título" v-model:model="toy.name" />
-            <InputComponent label="Categoria do Produto" hint="Categoria" v-model:model="toy.categoryId.name" />
-            <InputComponent label="Preço do Produto" hint="Preço" v-model:model="toy.price" />
-          </div>
-
-          <div class="q-mt-md flex justify-center">
-            <ConfirmActionButton label="Adicionar" color="secondary" type="submit" class="text-white" />
-          </div>
-        </form>
-      </template>
-    </CardModal>
-  </section>
-
   <!--dialog para editar brinquedo-->
   <section>
     <CardModal title="Editar Produto" v-model:is-open="editDialog">
       <template #content>
         <form @submit.prevent="editToy">
+          {{ toy }}
           <div class="q-gutter-md">
             <InputComponent label="Título do Produto" hint="Título" v-model="toy.name" />
-            <InputComponent label="Categoria do Produto" hint="Categoria" v-model="toy.categoryId.name" />
+
+            <q-select standout="text-black" v-model="toy.categoryId" :options="categoryOptions" label="Categoria"
+              option-label="name" option-value="id" use-input input-debounce="0" hide-dropdown-icon class="q-mb-md"
+              input-class="text-black" :popup-content-class="'bg-white text-black'" borderless dense rounded>
+              <template #option="props">
+                <q-item v-bind="props.itemProps">
+                  <q-item-section>
+                    {{ props.opt.name }}
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+
             <InputComponent label="Preço do Produto" hint="Preço" v-model="toy.price" />
           </div>
           <div class="q-mt-md row justify-center">
-            <ConfirmActionButton label="Salvar" color="secondary" type="submit" class="text-white" @click="editToy" />
+            <ConfirmActionButton label="Salvar" color="secondary" type="submit" class="text-white" />
           </div>
         </form>
       </template>
@@ -58,27 +53,37 @@
             Tem certeza que quer deletar a categoria {{ toy.categoryId.name }}?
           </div>
           <div class="row justify-center q-mt-xl">
-            <ConfirmActionButton label="Excluir" color="negative" @click="deleteToy" />
+            <ConfirmActionButton label="Excluir" color="negative" type="submit" />
           </div>
         </form>
       </template>
     </CardModal>
   </section>
 
-  <!--Dialog para deletar vários brinquedos-->
+
   <section>
     <CardModal title="Adicionar Produto" v-model:is-open="createDialog">
       <template #content>
+        {{ toy }}
         <form @submit.prevent="createToy">
           <div class="q-gutter-md">
-            <InputComponent label="Título do Produto" hint="Título" v-model:model="toy.name" />
-            <InputComponent label="Categoria do Produto" hint="Categoria" v-model:model="toy.categoryId.name" />
-            <InputComponent label="Preço do Produto" hint="Preço" v-model:model="toy.price" />
-          </div>
+            <InputComponent label="Título do Produto" hint="Título" v-model="toy.name" />
 
+            <q-select standout="text-black" v-model="toy.categoryId" :options="categoryOptions" label="Categoria"
+              option-label="name" option-value="id" use-input input-debounce="0" hide-dropdown-icon class="q-mb-md"
+              input-class="text-black" :popup-content-class="'bg-white text-black'" borderless dense rounded>
+              <template #option="props">
+                <q-item v-bind="props.itemProps">
+                  <q-item-section>
+                    {{ props.opt.name }}
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <InputComponent label="Preço do Produto" hint="Preço" v-model="toy.price" />
+          </div>
           <div class="q-mt-md row justify-center">
-            <ConfirmActionButton label="Adicionar" color="secondary" type="submit" class="text-white"
-              @click="createToy" />
+            <ConfirmActionButton label="Adicionar" color="secondary" type="submit" class="text-white" />
           </div>
         </form>
       </template>
@@ -95,9 +100,14 @@ import { columns } from './config/toyColumns.config';
 import CardModal from 'src/components/modals/CardModal.vue';
 import InputComponent from 'src/components/inputs/InputComponent.vue';
 import ConfirmActionButton from 'src/components/buttons/ConfirmActionButton.vue';
+import { CategoryService } from 'src/services/CategoryService';
+import type { ICategory } from 'src/interfaces/ICategory';
 
 const rows = ref<IToys[]>([]);
+const categoryOptions = ref<ICategory[]>([]);
 const toysService: ToysService = new ToysService('/toys');
+const categoryService: CategoryService = new CategoryService('/categories');
+
 const createDialog = defineModel('createDialog', {
   type: Boolean,
   default: false,
@@ -144,11 +154,33 @@ const fetchToys = async () => {
   }
 };
 
+const fetchCategories = async () => {
+  try {
+    const response = await categoryService.getCategories();
+    if (response.status !== 200) {
+      Notify.create({
+        type: 'negative',
+        message: 'Erro ao buscar categorias',
+        position: 'top-right',
+      });
+      return null;
+    }
+    Notify.create({
+      type: 'positive',
+      message: 'Categorias buscadas com sucesso',
+      position: 'top-right',
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
+};
+
 const openEditDialog = (id: number) => {
   const element = rows.value.find(e => e.id == id);
   if (element) {
     toy.value = element;
-    console.log(toy.value)
     editDialog.value = !editDialog.value;
   } else {
     Notify.create({
@@ -211,7 +243,7 @@ const editToy = async () => {
 
 const createToy = async () => {
   const res = await toysService.createToy(toy.value);
-  if (res.status !== 200) {
+  if (res.status !== 201) {
     Notify.create({
       message: "Erro ao criar novo brinquedo",
       color: "negative",
@@ -262,6 +294,7 @@ const deleteToy = async () => {
 
 onMounted(async () => {
   rows.value = await fetchToys();
+  categoryOptions.value = await fetchCategories();
 })
 
 watch(createDialog, (newValue, oldValue) => {

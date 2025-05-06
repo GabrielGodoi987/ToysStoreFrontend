@@ -51,7 +51,7 @@ export class ToysService {
 
   public async updateToy(id: number, toy: IToys) {
     try {
-      const response = await this.axiosApi.patch(`${this.path}/${id}`, toy);
+      const response = await this.axiosApi.put(`${this.path}/${id}`, toy);
       return response;
     }  catch (error) {
       console.error('Error updating category:', error);
