@@ -1,6 +1,5 @@
 <template>
   <main class="q-pa-md">
-    {{ toy }}
     <q-table flat bordered :rows="rows" :columns="columns" row-key="id">
       <template v-slot:body-cell-edit="props">
         <q-td :props="props">
@@ -18,7 +17,6 @@
     <CardModal title="Editar Produto" v-model:is-open="editDialog">
       <template #content>
         <form @submit.prevent="editToy">
-          {{ toy }}
           <div class="q-gutter-md">
             <InputComponent label="Título do Produto" hint="Título" v-model="toy.name" />
 
@@ -62,16 +60,24 @@
 
 
   <section>
-    <CardModal title="Adicionar Produto" v-model:is-open="createDialog">
+    <CardModal title="Adicionar Brinqued" v-model:is-open="createDialog">
       <template #content>
-        {{ toy }}
         <form @submit.prevent="createToy">
           <div class="q-gutter-md">
-            <InputComponent label="Título do Produto" hint="Título" v-model="toy.name" />
 
-            <q-select standout="text-black" v-model="toy.categoryId" :options="categoryOptions" label="Categoria"
-              option-label="name" option-value="id" use-input input-debounce="0" hide-dropdown-icon class="q-mb-md"
-              input-class="text-black" :popup-content-class="'bg-white text-black'" borderless dense rounded>
+            <input type="file" accept="image/*" multiple @change="handleImageChange" />
+
+            <!-- Pré-visualização -->
+            <div v-if="imagePreviews.length" class="row">
+              <div v-for="(src, index) in imagePreviews" :key="index" class="col-md">
+                <img :src="src" alt="Pré-visualização" width="100" />
+              </div>
+            </div>
+            <InputComponent label="Título do Brinqued" hint="Título" v-model="toy.name" />
+            <q-select standout="bg-transparent text-black" v-model="toy.categoryId" :options="categoryOptions"
+              label="Categoria" option-label="name" option-value="id" use-input input-debounce="0" hide-dropdown-icon
+              class="q-mb-md" input-class="text-black" :popup-content-class="'bg-white text-black'" borderless dense
+              rounded>
               <template #option="props">
                 <q-item v-bind="props.itemProps">
                   <q-item-section>
@@ -80,7 +86,27 @@
                 </q-item>
               </template>
             </q-select>
+            <InputComponent label="Descrição do produto" hint="Descrição maior" v-model="toy.description" />
+            <InputComponent label="Breve descrição do produto" hint="Descrição menor" v-model="toy.shortDescription" />
             <InputComponent label="Preço do Produto" hint="Preço" v-model="toy.price" />
+
+            <div class="q-mb-md">
+              <q-input filled v-model="specInput" label="Adicionar especificação" @keyup.enter="addSpecification" dense
+                clearable>
+                <template #append>
+                  <q-btn icon="add" round dense color="primary" @click="addSpecification" />
+                </template>
+              </q-input>
+
+              <!-- Lista de specifications -->
+              <div class="q-mt-sm">
+                <q-chip v-for="(spec, index) in toy.specifications" :key="index" removable
+                  @remove="removeSpecification(index)" color="primary" text-color="white" class="q-mr-sm q-mb-sm">
+                  {{ spec }}
+                </q-chip>
+              </div>
+            </div>
+
           </div>
           <div class="q-mt-md row justify-center">
             <ConfirmActionButton label="Adicionar" color="secondary" type="submit" class="text-white" />
@@ -130,6 +156,52 @@ const toy = ref<IToys>({
   },
   photos: []
 })
+
+const photoFiles = ref<File[] | null>([]);
+const imagePreviews = ref<any>([])
+
+const handleImageChange = (event: any) => {
+  const files: File[] = Array.from(event.target.files)
+  photoFiles.value = files
+  imagePreviews.value = files.map((file: any) => URL.createObjectURL(file))
+}
+
+const specInput = ref('')
+
+const addSpecification = () => {
+  const value = specInput.value.trim()
+  if (value !== '') {
+    toy.value.specifications.push(value)
+    specInput.value = ''
+  }
+}
+
+const removeSpecification = (index: number) => {
+  toy.value.specifications.splice(index, 1)
+}
+
+const buildFormData = () => {
+  const formData = new FormData();
+  formData.append('name', toy.value.name);
+  formData.append('price', String(toy.value.price));
+  formData.append('categoryId', String(toy.value.categoryId.id));
+  formData.append('description', toy.value.description);
+  formData.append('shortDescription', toy.value.shortDescription);
+  if (toy.value.shortDescription.length > 0) {
+    formData.append('specifications', JSON.stringify(toy.value.specifications));
+  } else {
+    formData.append('specifications', "");
+  }
+
+  if (photoFiles.value) {
+    photoFiles.value.forEach((file, index) => {
+      formData.append('photos', file);
+      console.log(index)
+    });
+  }
+  return formData;
+};
+
 
 const fetchToys = async () => {
   try {
@@ -220,7 +292,8 @@ const editToy = async () => {
     editDialog.value = false;
     return;
   }
-  const res = await toysService.updateToy(toy.value.id, toy.value)
+  const formData = buildFormData();
+  const res = await toysService.updateToy(toy.value.id, formData)
   if (res.status !== 200) {
     Notify.create({
       message: "Erro ao editar novo brinquedo",
@@ -242,7 +315,8 @@ const editToy = async () => {
 }
 
 const createToy = async () => {
-  const res = await toysService.createToy(toy.value);
+  const formData = buildFormData();
+  const res = await toysService.createToy(formData);
   if (res.status !== 201) {
     Notify.create({
       message: "Erro ao criar novo brinquedo",

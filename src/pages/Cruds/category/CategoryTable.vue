@@ -1,6 +1,5 @@
 <template>
   <main class="q-pa-md">
-    {{ category }}
     <q-table flat bordered :rows="rows" :columns="columns" row-key="id">
       <template v-slot:body-cell-edit="props">
         <q-td :props="props">
@@ -12,9 +11,10 @@
       </template>
     </q-table>
   </main>
+
+  <!-- EDITAR CATEGORIA -->
   <section v-if="category">
-    <CardModal :title="`Editar categoria ${category.name}`" back-dropfilter="blur(5px)"
-      v-model:is-open="openEditDialog">
+    <CardModal :title="`Editar categoria ${category.name}`" back-dropfilter="blur(5px)" v-model:is-open="openEditDialog">
       <template #content>
         <form @submit.prevent="editCategory">
           <InputComponent label="Editar nome" v-model="category.name" hint="Coloque o novo nome da categoria" />
@@ -26,6 +26,7 @@
     </CardModal>
   </section>
 
+  <!-- DELETAR CATEGORIA -->
   <section>
     <CardModal title="Exclusão de categoria" back-dropfilter="blur(5px)" v-model:is-open="openDeleteDialog">
       <template #content>
@@ -41,12 +42,25 @@
     </CardModal>
   </section>
 
-  <!--Quando clicar no botão de adicionar acionamos esse cara e após isso abrimos o formulário para adicionar novas categorias de brinquedos e tudo mais-->
+  <!-- ADICIONAR CATEGORIA -->
   <section>
     <CardModal title="Adicionar Categoria" :isOpen="createDialog">
       <template #content>
-        <form action="post" @submit.prevent="createCategory">
+        <form @submit.prevent="createCategory">
           <InputComponent v-model="category.name" label="Nome da categoria" hint="Digite o nome da categoria" />
+
+          <q-file
+            filled
+            v-model="category.file"
+            accept="image/*"
+            label="Escolha uma imagem"
+            @update:model-value="onFileChange"
+          />
+
+          <div v-if="imagePreview" class="q-mt-md">
+            <q-img :src="imagePreview" :ratio="16/9" contain />
+          </div>
+
           <div class="row q-mt-lg justify-center">
             <ConfirmActionButton label="Salvar" color="secondary" @click="createCategory" />
           </div>
@@ -68,172 +82,137 @@ import ConfirmActionButton from 'src/components/buttons/ConfirmActionButton.vue'
 
 const categoryService: CategoryService = new CategoryService('/categories');
 const rows = ref<ICategory[]>([]);
-const category = ref<ICategory>({
+
+const category = ref<any>({
   id: null,
   name: '',
-  url: ''
+  url: '',
+  file: null
 });
+
+const imagePreview = ref<string | null>(null);
+
 const createDialog = defineModel('createDialog', {
   type: Boolean,
   default: false,
   required: true
-})
+});
+
 const openEditDialog = ref<boolean>(false);
 const openDeleteDialog = ref<boolean>(false);
+
+const onFileChange = (file: File) => {
+  if (file) {
+    imagePreview.value = URL.createObjectURL(file);
+  } else {
+    imagePreview.value = null;
+  }
+};
 
 const openEditCategoryDialog = (id: number) => {
   category.value = {
     id: null,
     name: '',
-    url: ''
+    url: '',
+    file: null
   };
   const element = rows.value.find(e => e.id === id);
   if (element) {
-    category.value = element;
-    openEditDialog.value = !openEditDialog.value;
-  } else {
-    console.warn(`Categoria com id ${id} não encontrada.`);
+    category.value = { ...element, file: null };
+    openEditDialog.value = true;
   }
-}
+};
 
 const openDeleteCategoryDialog = (id: number) => {
   const element = rows.value.find(e => e.id === id);
   if (element) {
     category.value = element;
-    openDeleteDialog.value = !openDeleteDialog.value;
-  } else {
-    console.warn(`Categoria com id ${id} não encontrada.`);
+    openDeleteDialog.value = true;
   }
-}
+};
 
 const fetchCategories = async () => {
   try {
     const response = await categoryService.getCategories();
     if (response.status !== 200) {
-      Notify.create({
-        type: 'negative',
-        message: 'Erro ao buscar categorias',
-        position: 'top-right',
-      });
-      return null;
+      Notify.create({ type: 'negative', message: 'Erro ao buscar categorias', position: 'top-right' });
+      return [];
     }
-    Notify.create({
-      type: 'positive',
-      message: 'Categorias buscadas com sucesso',
-      position: 'top-right',
-    });
+    Notify.create({ type: 'positive', message: 'Categorias carregadas com sucesso', position: 'top-right' });
     return response.data;
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    console.error('Erro ao buscar categorias:', error);
     return [];
   }
 };
 
 const createCategory = async () => {
-  const res = await categoryService.createCategory(category.value);
-  if (res.status !== 201) {
-    console.log(res)
-    Notify.create({
-      message: "Categoria não foi criada",
-      color: "negative",
-      position: "top-left",
-      timeout: 2000
-    })
+  if (!category.value.name || !category.value.file) {
+    Notify.create({ message: 'Preencha todos os campos', color: 'negative', position: 'top-left' });
+    return;
   }
-  Notify.create({
-    message: "Categoria criada com sucesso",
-    color: "positive",
-    position: "top-left",
-    timeout: 2000
-  })
 
-  rows.value.push(res.data)
+  const formData = new FormData();
+  formData.append('name', category.value.name);
+  formData.append('file', category.value.file);
 
+  const res = await categoryService.createCategory(formData);
+  if (res.status !== 201) {
+    Notify.create({ message: 'Categoria não foi criada', color: 'negative', position: 'top-left' });
+    return;
+  }
+
+  Notify.create({ message: 'Categoria criada com sucesso', color: 'positive', position: 'top-left' });
+
+  rows.value.push(res.data);
   createDialog.value = false;
 
-  category.value = {
-    id: 0,
-    url: '',
-    name: ''
-  }
-}
+  category.value = { id: null, name: '', url: '', file: null };
+  imagePreview.value = null;
+};
 
 const deleteCategory = async () => {
   if (category.value.id == null) {
-    Notify.create({
-      message: 'Não podem ter campos vazios',
-      color: 'negative',
-      timeout: 2000,
-      position: 'bottom-left'
-    })
+    Notify.create({ message: 'Categoria inválida', color: 'negative', timeout: 2000 });
     return;
   }
+
   const res = await categoryService.deleteCategory(category.value.id);
   if (res.status !== 204) {
-    Notify.create({
-      message: `Erro ao deletar categoria ${category.value.id}`,
-      color: "negative",
-      position: "top-left",
-      timeout: 2000
-    })
-  }
-  const index = rows.value.findIndex(e => e.id == category.value.id);
-  rows.value.splice(index, 1)
-  Notify.create({
-    message: "Categoria deletada com sucesso",
-    color: "positive",
-    position: "top-left",
-    timeout: 2000
-  })
-
-  openDeleteDialog.value = false
-}
-
-const editCategory = async () => {
-  if (category.value.id == null || category.value.name == '') {
-    Notify.create({
-      message: "Digite um nome válido para a categoria",
-      caption: "A categoria foi enviada vazia, o sistema não aceita isso",
-      color: 'warning',
-      position: "top-right",
-      timeout: 2000
-    })
-    openEditDialog.value = false
+    Notify.create({ message: 'Erro ao deletar categoria', color: 'negative' });
     return;
   }
-  const res = await categoryService.updateCategory(category.value.id, category.value)
-  if (res.status !== 200) {
-    Notify.create({
-      message: `Erro ao editar categoria: ${category.value.name}`,
-      color: "negative",
-      position: "top-left",
-      timeout: 2000
-    })
-  }
-  Notify.create({
-    message: "Categoria Editada com sucesso",
-    color: "positive",
-    position: "top-left",
-    timeout: 2000
-  })
-  openEditDialog.value = false
-}
 
+  rows.value = rows.value.filter(e => e.id !== category.value.id);
+  Notify.create({ message: 'Categoria deletada com sucesso', color: 'positive' });
+  openDeleteDialog.value = false;
+};
+
+const editCategory = async () => {
+  if (!category.value.name || category.value.id == null) {
+    Notify.create({ message: 'Nome inválido', color: 'warning', position: 'top-right' });
+    openEditDialog.value = false;
+    return;
+  }
+
+  const res = await categoryService.updateCategory(category.value.id, category.value);
+  if (res.status !== 200) {
+    Notify.create({ message: 'Erro ao editar categoria', color: 'negative' });
+    return;
+  }
+
+  Notify.create({ message: 'Categoria editada com sucesso', color: 'positive' });
+  openEditDialog.value = false;
+};
 
 onMounted(async () => {
   rows.value = await fetchCategories();
-  console.log(rows.value);
-})
+});
 
-watch(createDialog, (newValue, oldValue) => {
-  if (newValue != oldValue) {
-    category.value = {
-      id: null,
-      name: '',
-      url: ''
-    }
+watch(createDialog, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    category.value = { id: null, name: '', url: '', file: null };
+    imagePreview.value = null;
   }
-})
+});
 </script>
-
-<style></style>

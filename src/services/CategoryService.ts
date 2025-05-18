@@ -1,6 +1,5 @@
 import type { AxiosInstance } from 'axios';
 import { api } from 'src/boot/axios';
-import type { ICategory } from 'src/interfaces/ICategory';
 
 export class CategoryService {
   private axiosApi: AxiosInstance;
@@ -31,7 +30,7 @@ export class CategoryService {
     }
   }
 
-  public async createCategory(category: ICategory) {
+  public async createCategory(category: FormData) {
     try {
       const response = await this.axiosApi.post('/categories', category);
       return response;
@@ -41,7 +40,7 @@ export class CategoryService {
     }
   }
 
-  public async updateCategory(id: number, category: ICategory) {
+  public async updateCategory(id: number, category: FormData) {
     try {
       const response = await this.axiosApi.put(`/categories/${id}`, category);
       return response;

@@ -1,6 +1,5 @@
 import type { AxiosInstance } from 'axios';
 import { api } from 'src/boot/axios';
-import type { IToys } from 'src/interfaces/IToys';
 
 export class ToysService {
   private axiosApi: AxiosInstance;
@@ -39,7 +38,7 @@ export class ToysService {
     }
   }
 
-  public async createToy(toy: IToys) {
+  public async createToy(toy: FormData) {
     try {
       const response = await this.axiosApi.post(this.path, toy);
       return response;
@@ -49,7 +48,7 @@ export class ToysService {
     }
   }
 
-  public async updateToy(id: number, toy: IToys) {
+  public async updateToy(id: number, toy: FormData) {
     try {
       const response = await this.axiosApi.put(`${this.path}/${id}`, toy);
       return response;
