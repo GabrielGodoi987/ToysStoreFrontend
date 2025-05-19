@@ -11,9 +11,11 @@
       label-class="text-grey-7"
       hint-class="text-grey-6 q-pl-xs"
       class="q-mb-sm rounded-borders"
+      type="text"
+      prefix="R$"
     >
       <template v-slot:prepend>
-        <q-icon name="edit" size="xs" color="grey-6" />
+        <q-icon name="attach_money" size="xs" color="grey-6" />
       </template>
     </q-input>
   </div>

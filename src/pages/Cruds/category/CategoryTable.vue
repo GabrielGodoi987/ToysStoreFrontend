@@ -14,12 +14,24 @@
 
   <!-- EDITAR CATEGORIA -->
   <section v-if="category">
-    <CardModal :title="`Editar categoria ${category.name}`" back-dropfilter="blur(5px)" v-model:is-open="openEditDialog">
+    <CardModal 
+      :title="`Editar categoria ${category.name}`" 
+      back-dropfilter="blur(5px)" 
+      v-model:is-open="openEditDialog"
+    >
       <template #content>
         <form @submit.prevent="editCategory">
-          <InputComponent label="Editar nome" v-model="category.name" hint="Coloque o novo nome da categoria" />
+          <InputComponent 
+            label="Editar nome" 
+            v-model="category.name" 
+            hint="Coloque o novo nome da categoria" 
+          />
           <div class="row justify-center q-mt-md">
-            <ConfirmActionButton label="Editar Categoria" color="secondary" @click="editCategory" />
+            <ConfirmActionButton 
+              label="Editar Categoria" 
+              color="secondary" 
+              @click="editCategory" 
+            />
           </div>
         </form>
       </template>
@@ -28,14 +40,22 @@
 
   <!-- DELETAR CATEGORIA -->
   <section>
-    <CardModal title="Exclusão de categoria" back-dropfilter="blur(5px)" v-model:is-open="openDeleteDialog">
+    <CardModal 
+      title="Exclusão de categoria" 
+      back-dropfilter="blur(5px)" 
+      v-model:is-open="openDeleteDialog"
+    >
       <template #content>
         <form @submit.prevent="deleteCategory">
           <div class="text-h5 text-weight-light">
             Tem certeza que quer deletar a categoria {{ category.name }}?
           </div>
           <div class="row justify-center q-mt-xl">
-            <ConfirmActionButton label="Excluir" color="negative" @click="deleteCategory" />
+            <ConfirmActionButton 
+              label="Excluir" 
+              color="negative" 
+              @click="deleteCategory" 
+            />
           </div>
         </form>
       </template>
@@ -44,10 +64,17 @@
 
   <!-- ADICIONAR CATEGORIA -->
   <section>
-    <CardModal title="Adicionar Categoria" :isOpen="createDialog">
+    <CardModal 
+      title="Adicionar Categoria" 
+      :isOpen="createDialog"
+    >
       <template #content>
         <form @submit.prevent="createCategory">
-          <InputComponent v-model="category.name" label="Nome da categoria" hint="Digite o nome da categoria" />
+          <InputComponent 
+            v-model="category.name" 
+            label="Nome da categoria" 
+            hint="Digite o nome da categoria" 
+          />
 
           <q-file
             filled
@@ -62,7 +89,11 @@
           </div>
 
           <div class="row q-mt-lg justify-center">
-            <ConfirmActionButton label="Salvar" color="secondary" @click="createCategory" />
+            <ConfirmActionButton 
+              label="Salvar" 
+              color="secondary" 
+              @click="createCategory" 
+            />
           </div>
         </form>
       </template>

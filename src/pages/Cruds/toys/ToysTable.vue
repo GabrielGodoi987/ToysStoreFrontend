@@ -1,115 +1,238 @@
 <template>
   <main class="q-pa-md">
-    <q-table flat bordered :rows="rows" :columns="columns" row-key="id">
+    <q-table
+      flat
+      bordered
+      dense
+      :rows="rows"
+      :columns="columns"
+      row-key="id"
+      class="shadow-2 rounded-borders"
+    >
       <template v-slot:body-cell-edit="props">
-        <q-td :props="props">
-          <div class="row justify-center items-center q-gutter-x-md">
-            <q-btn flat color="negative" round dense icon="delete" @click="openDeleteDialog(props.row.id)" />
-            <q-btn flat color="primary" round dense icon="edit" @click="openEditDialog(props.row.id)" />
+        <q-td :props="props" class="text-center">
+          <div class="row justify-center items-center q-gutter-sm">
+            <q-btn
+              flat
+              color="negative"
+              round
+              dense
+              icon="delete"
+              @click="openDeleteDialog(props.row.id)"
+            />
+            <q-btn
+              flat
+              color="primary"
+              round
+              dense
+              icon="edit"
+              @click="openEditDialog(props.row.id)"
+            />
           </div>
         </q-td>
       </template>
     </q-table>
   </main>
 
-  <!--dialog para editar brinquedo-->
+  <!-- Dialog para editar brinquedo -->
   <section>
     <CardModal title="Editar Produto" v-model:is-open="editDialog">
       <template #content>
-        <form @submit.prevent="editToy">
-          <div class="q-gutter-md">
-            <InputComponent label="Título do Produto" hint="Título" v-model="toy.name" />
+        <form @submit.prevent="editToy" class="q-gutter-md">
+          <InputComponent
+            label="Título do Produto"
+            hint="Título"
+            v-model="toy.name"
+          />
 
-            <q-select standout="text-black" v-model="toy.categoryId" :options="categoryOptions" label="Categoria"
-              option-label="name" option-value="id" use-input input-debounce="0" hide-dropdown-icon class="q-mb-md"
-              input-class="text-black" :popup-content-class="'bg-white text-black'" borderless dense rounded>
-              <template #option="props">
-                <q-item v-bind="props.itemProps">
-                  <q-item-section>
-                    {{ props.opt.name }}
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+          <q-select
+            v-model="toy.categoryId"
+            :options="categoryOptions"
+            label="Categoria"
+            option-label="name"
+            option-value="id"
+            standout
+            use-input
+            input-debounce="0"
+            dense
+            borderless
+            rounded
+            input-class="text-black"
+            class="q-mb-md"
+            :popup-content-class="'bg-white text-black'"
+          >
+            <template #option="props">
+              <q-item v-bind="props.itemProps">
+                <q-item-section>
+                  {{ props.opt.name }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
 
-            <InputComponent label="Preço do Produto" hint="Preço" v-model="toy.price" />
-          </div>
+          <InputComponent
+            label="Preço do Produto"
+            hint="Preço"
+            v-model="toy.price"
+          />
+
           <div class="q-mt-md row justify-center">
-            <ConfirmActionButton label="Salvar" color="secondary" type="submit" class="text-white" />
+            <ConfirmActionButton
+              label="Salvar"
+              color="secondary"
+              type="submit"
+              class="text-white"
+            />
           </div>
         </form>
       </template>
     </CardModal>
   </section>
 
-  <!--Dialog para deletar brinquedo-->
+  <!-- Dialog para deletar brinquedo -->
   <section>
     <CardModal title="Deletar categoria" v-model:is-open="deleteDialog">
       <template #content>
         <form @submit.prevent="deleteToy">
-          <div class="text-h5 text-weight-light">
-            Tem certeza que quer deletar a categoria {{ toy.categoryId.name }}?
+          <div class="text-h6 text-grey-8 q-mb-md text-center">
+            Tem certeza que quer deletar a categoria <strong>{{ toy.categoryId.name }}</strong>?
           </div>
           <div class="row justify-center q-mt-xl">
-            <ConfirmActionButton label="Excluir" color="negative" type="submit" />
+            <ConfirmActionButton
+              label="Excluir"
+              color="negative"
+              type="submit"
+            />
           </div>
         </form>
       </template>
     </CardModal>
   </section>
 
-
+  <!-- Dialog para adicionar brinquedo -->
   <section>
-    <CardModal title="Adicionar Brinqued" v-model:is-open="createDialog">
+    <CardModal title="Adicionar Brinquedo" v-model:is-open="createDialog">
       <template #content>
-        <form @submit.prevent="createToy">
-          <div class="q-gutter-md">
+        <form @submit.prevent="createToy" class="q-gutter-md">
+          <q-uploader
+            accept="image/*"
+            label="Enviar imagens"
+            multiple
+            @added="handleImageChange"
+            flat
+            bordered
+            class="rounded-borders"
+          />
 
-            <input type="file" accept="image/*" multiple @change="handleImageChange" />
-
-            <!-- Pré-visualização -->
-            <div v-if="imagePreviews.length" class="row">
-              <div v-for="(src, index) in imagePreviews" :key="index" class="col-md">
-                <img :src="src" alt="Pré-visualização" width="100" />
-              </div>
+          <div v-if="imagePreviews.length" class="row q-col-gutter-sm q-mt-md">
+            <div
+              v-for="(src, index) in imagePreviews"
+              :key="index"
+              class="col-auto"
+            >
+              <q-img
+                :src="src"
+                alt="Pré-visualização"
+                :ratio="1"
+                class="rounded-borders shadow-1"
+                style="max-width: 100px"
+              />
             </div>
-            <InputComponent label="Título do Brinqued" hint="Título" v-model="toy.name" />
-            <q-select standout="bg-transparent text-black" v-model="toy.categoryId" :options="categoryOptions"
-              label="Categoria" option-label="name" option-value="id" use-input input-debounce="0" hide-dropdown-icon
-              class="q-mb-md" input-class="text-black" :popup-content-class="'bg-white text-black'" borderless dense
-              rounded>
-              <template #option="props">
-                <q-item v-bind="props.itemProps">
-                  <q-item-section>
-                    {{ props.opt.name }}
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-            <InputComponent label="Descrição do produto" hint="Descrição maior" v-model="toy.description" />
-            <InputComponent label="Breve descrição do produto" hint="Descrição menor" v-model="toy.shortDescription" />
-            <InputComponent label="Preço do Produto" hint="Preço" v-model="toy.price" />
-
-            <div class="q-mb-md">
-              <q-input filled v-model="specInput" label="Adicionar especificação" @keyup.enter="addSpecification" dense
-                clearable>
-                <template #append>
-                  <q-btn icon="add" round dense color="primary" @click="addSpecification" />
-                </template>
-              </q-input>
-
-              <!-- Lista de specifications -->
-              <div class="q-mt-sm">
-                <q-chip v-for="(spec, index) in toy.specifications" :key="index" removable
-                  @remove="removeSpecification(index)" color="primary" text-color="white" class="q-mr-sm q-mb-sm">
-                  {{ spec }}
-                </q-chip>
-              </div>
-            </div>
-
           </div>
+
+          <InputComponent
+            label="Título do Brinquedo"
+            hint="Título"
+            v-model="toy.name"
+          />
+
+            <q-select
+              standout
+              v-model="toy.categoryId"
+              :options="categoryOptions"
+              label="Selecione a Categoria"
+              option-label="name"
+              option-value="id"
+              use-input
+              input-debounce="0"
+              dense
+              rounded
+              borderless
+              input-class="text-weight-bold text-h6 text-black"
+              label-class="text-weight-bold text-h6"
+              class="q-mb-md"
+              :popup-content-class="'bg-gray text-black '"
+            >
+            <template #option="props">
+              <q-item v-bind="props.itemProps">
+                <q-item-section>
+                  {{ props.opt.name }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+
+          <InputComponent
+            label="Descrição do produto"
+            hint="Descrição maior"
+            v-model="toy.description"
+          />
+
+          <InputComponent
+            label="Breve descrição do produto"
+            hint="Descrição menor"
+            v-model="toy.shortDescription"
+          />
+
+          <InputComponentPrice
+            label="Preço do Produto"
+            hint="Preço"
+            v-model="toy.price"
+          />
+
+          <div class="q-mb-md">
+            <q-input
+              filled
+              v-model="specInput"
+              label="Adicionar especificação"
+              @keyup.enter="addSpecification"
+              dense
+              clearable
+              class="q-mb-sm"
+            >
+              <template #append>
+                <q-btn
+                  icon="add"
+                  round
+                  dense
+                  color="primary"
+                  @click="addSpecification"
+                />
+              </template>
+            </q-input>
+
+            <div>
+              <q-chip
+                v-for="(spec, index) in toy.specifications"
+                :key="index"
+                removable
+                @remove="removeSpecification(index)"
+                color="primary"
+                text-color="white"
+                class="q-mr-sm q-mb-sm"
+              >
+                {{ spec }}
+              </q-chip>
+            </div>
+          </div>
+
           <div class="q-mt-md row justify-center">
-            <ConfirmActionButton label="Adicionar" color="secondary" type="submit" class="text-white" />
+            <ConfirmActionButton
+              label="Adicionar"
+              color="secondary"
+              type="submit"
+              class="text-white"
+            />
           </div>
         </form>
       </template>
@@ -125,6 +248,7 @@ import { onMounted, ref, watch } from 'vue';
 import { columns } from './config/toyColumns.config';
 import CardModal from 'src/components/modals/CardModal.vue';
 import InputComponent from 'src/components/inputs/InputComponent.vue';
+import InputComponentPrice from 'src/components/inputs/InputComponentPrice.vue';
 import ConfirmActionButton from 'src/components/buttons/ConfirmActionButton.vue';
 import { CategoryService } from 'src/services/CategoryService';
 import type { ICategory } from 'src/interfaces/ICategory';

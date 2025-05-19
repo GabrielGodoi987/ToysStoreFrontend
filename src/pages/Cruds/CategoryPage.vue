@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md">
     <div>
-      <div class="q-pa-md text-h3">Administração - Categoria</div>
+      <div class="text-h3 text-weight-bold text-primary catalog-title">Administração de Categoria</div>
     </div>
 
     <section>
