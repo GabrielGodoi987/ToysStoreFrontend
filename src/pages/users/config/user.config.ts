@@ -14,7 +14,7 @@ export const userConfig: ITeam[] = [
   },
   {
     id: 2,
-    name: 'Jane Smith',
+    name: 'Rafael Mascarenhas Borges',
     image: 'https://picsum.photos/200/300',
     description: 'Desenvolvedor Backend',
     role: 'Backend Developer',
@@ -25,7 +25,7 @@ export const userConfig: ITeam[] = [
   },
   {
     id: 3,
-    name: 'Alice Johnson',
+    name: 'Eduarda',
     image: 'https://picsum.photos/200/300',
     description: 'Designer UI/UX',
     role: 'UI/UX Designer',
@@ -36,7 +36,7 @@ export const userConfig: ITeam[] = [
   },
   {
     id: 4,
-    name: 'Bob Brown',
+    name: 'Vitor Tavares Chaves',
     image: 'https://picsum.photos/200/300',
     description: 'Gerente de Projetos',
     role: 'Project Manager',
@@ -45,4 +45,15 @@ export const userConfig: ITeam[] = [
       linkedin: 'linkedin.com/in/bobbrown',
     },
   },
+  {
+    id: 5,
+    name: 'Lindalva',
+    image: 'https://picsum.photos/200/300',
+    description: 'Desenvolvedora Frontend',
+    role: 'Frontend Developer',
+    social: {
+      github: 'github.com/johndoe',
+      linkedin: 'linkedin.com/in/johndoe',
+    },
+  }
 ];
