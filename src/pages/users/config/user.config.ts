@@ -15,45 +15,46 @@ export const userConfig: ITeam[] = [
   {
     id: 2,
     name: 'Rafael Mascarenhas Borges',
-    image: 'https://picsum.photos/200/300',
+    image: './images/Rafael.PNG',
     description: 'Desenvolvedor Backend',
     role: 'Backend Developer',
     social: {
-      github: 'github.com/janesmith',
+      github: 'https://github.com/RafaelBorges22',
       linkedin: 'linkedin.com/in/janesmith',
     },
   },
   {
     id: 3,
-    name: 'Eduarda',
-    image: 'https://picsum.photos/200/300',
+    name: 'Eduarda Josileide da Silva',
+    image: './images/Eduarda.jpg',
     description: 'Designer UI/UX',
     role: 'UI/UX Designer',
     social: {
-      github: 'github.com/alicejohnson',
-      linkedin: 'linkedin.com/in/alicejohnson',
+      github: 'https://github.com/eduardajs3',
+      linkedin: 'https://www.linkedin.com/in/eduarda-josileide-49028b324',
     },
   },
   {
     id: 4,
     name: 'Vitor Tavares Chaves',
-    image: 'https://picsum.photos/200/300',
+    image: './images/vitor.PNG',
     description: 'Gerente de Projetos',
     role: 'Project Manager',
     social: {
-      github: 'github.com/bobbrown',
+      github: 'https://github.com/Tavaressan',
       linkedin: 'linkedin.com/in/bobbrown',
     },
   },
   {
     id: 5,
-    name: 'Lindalva',
-    image: 'https://picsum.photos/200/300',
+    name: 'Lindalva Carlos da Silva',
+    image: './images/Lindalva.PNG',
     description: 'Desenvolvedora Frontend',
     role: 'Frontend Developer',
     social: {
-      github: 'github.com/johndoe',
-      linkedin: 'linkedin.com/in/johndoe',
+      github: 'https://github.com/dalvinha75',
+      linkedin: 'https://www.linkedin.com/in/dalva-silva-031519334',
     },
   }
 ];
+
