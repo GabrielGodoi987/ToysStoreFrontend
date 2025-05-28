@@ -5,9 +5,9 @@
       style="background-image: url('/images/imageToyStory.png'); background-size: cover; background-position: center; min-height: 400px"
     >
       <div class="col-12 col-md-6 q-pr-lg">
-        <h1 class="text-h3 text-weight-bolder q-mb-md">PIXAR</h1>
+        <h1 class="text-h3 text-weight-bolder q-mb-md">PIXAR Loja de Binquedos</h1>
         <p class="text-h6 q-mb-lg" style="max-width: 500px;">
-          Ao infinito e além! Explore os brinquedos da Pixar, roupas, itens colecionáveis e mais
+          Ao infinito e além! Explore os brinquedos da Pixar, roupas, itens colecionáveis e mais. Descubra a magia dos filmes da Pixar com nossa coleção exclusiva de produtos inspirados em Toy Story e muito mais.
         </p>
         <q-btn
           label="Explorar mais"
