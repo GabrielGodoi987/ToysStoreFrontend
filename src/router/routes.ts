@@ -3,13 +3,20 @@ import type { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    name: 'home',
+    component: () => import('layouts/BlankLayout.vue'),
     children: [
       {
         path: '',
-        name: 'home',
+        name: 'home-page',
         component: () => import('pages/HomePage.vue'),
       },
+    ],
+  },
+  {
+    path: '/management',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
       {
         path: '/catalog',
         name: 'catalog',
@@ -28,12 +35,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/admin/toys',
         name: 'admin-toys',
-        component: () => import("pages/Cruds/ProductPage.vue")
+        component: () => import('pages/Cruds/ProductPage.vue'),
       },
       {
         path: '/admin/categories',
         name: 'admin-categories',
-        component: () => import("pages/Cruds/CategoryPage.vue")
+        component: () => import('pages/Cruds/CategoryPage.vue'),
       },
       {
         path: '/team',

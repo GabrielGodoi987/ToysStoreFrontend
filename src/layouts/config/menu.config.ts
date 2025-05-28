@@ -10,19 +10,19 @@ export const menuConfig: IMenu[] = [
   {
     name: 'Catalogo',
     icon: 'list',
-    path: '/catalog',
+    path: '/management/catalog',
     isDropdown: false,
   },
   {
     name: 'Administração',
     icon: 'settings',
-    path: '/admin',
+    path: '/management/admin',
     isDropdown: true,
     children: [
       {
         name: 'Categorias',
         icon: 'mdi-invoice-list-outline',
-        path: '/admin/categories',
+        path: '/management/admin/categories',
         isDropdown: false,
       },
       {
@@ -36,7 +36,7 @@ export const menuConfig: IMenu[] = [
   {
     name: 'Equipe',
     icon: 'people',
-    path: '/team',
+    path: '/management/team',
     isDropdown: false,
   },
 ];
