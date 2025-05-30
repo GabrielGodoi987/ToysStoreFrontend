@@ -15,7 +15,7 @@ export const userConfig: ITeam[] = [
   {
     id: 2,
     name: 'Rafael Mascarenhas Borges',
-    image: './images/Rafael.PNG',
+    image: 'https://avatars.githubusercontent.com/u/163860887?s=400&u=1f5401178a2adef170b0803fc1fcc3451e55a5e3&v=4',
     description: 'Desenvolvedor Backend',
     role: 'Backend Developer',
     social: {
@@ -26,7 +26,7 @@ export const userConfig: ITeam[] = [
   {
     id: 3,
     name: 'Eduarda Josileide da Silva',
-    image: './images/Eduarda.jpg',
+    image: './UserImages/Eduarda.jpeg',
     description: 'Designer UI/UX',
     role: 'UI/UX Designer',
     social: {
@@ -37,7 +37,7 @@ export const userConfig: ITeam[] = [
   {
     id: 4,
     name: 'Vitor Tavares Chaves',
-    image: './images/vitor.PNG',
+    image: 'https://avatars.githubusercontent.com/u/146781330?v=4',
     description: 'Gerente de Projetos',
     role: 'Project Manager',
     social: {
@@ -48,7 +48,7 @@ export const userConfig: ITeam[] = [
   {
     id: 5,
     name: 'Lindalva Carlos da Silva',
-    image: './images/Lindalva.PNG',
+    image: './UserImages/Lindalva.jpeg',
     description: 'Desenvolvedora Frontend',
     role: 'Frontend Developer',
     social: {
