@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance } from 'axios';
 
+
 declare module 'vue' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
