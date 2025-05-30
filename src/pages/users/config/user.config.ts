@@ -16,11 +16,11 @@ export const userConfig: ITeam[] = [
     id: 2,
     name: 'Rafael Mascarenhas Borges',
     image: 'https://avatars.githubusercontent.com/u/163860887?s=400&u=1f5401178a2adef170b0803fc1fcc3451e55a5e3&v=4',
-    description: 'Desenvolvedor Backend',
-    role: 'Backend Developer',
+    description: 'Desenvolvedor Fullstack',
+    role: 'Fullstack Developer',
     social: {
       github: 'https://github.com/RafaelBorges22',
-      linkedin: 'linkedin.com/in/janesmith',
+      linkedin: 'https://www.linkedin.com/in/rafael-mascarenhas-4b0a5b339/',
     },
   },
   {
