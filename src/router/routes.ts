@@ -18,32 +18,32 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '/catalog',
+        path: 'catalog',
         name: 'catalog',
         component: () => import('pages/CatalogPage.vue'),
       },
       {
-        path: '/catalog/:id',
+        path: 'catalog/:id',
         name: 'product',
         component: () => import('pages/ProductsPage.vue'),
       },
       {
-        path: '/toy/:id',
+        path: 'toy/:id',
         name: 'toy',
         component: () => import('pages/ToyPage.vue'),
       },
       {
-        path: '/admin/toys',
+        path: 'admin/toys',
         name: 'admin-toys',
         component: () => import('pages/Cruds/ProductPage.vue'),
       },
       {
-        path: '/admin/categories',
+        path: 'admin/categories',
         name: 'admin-categories',
         component: () => import('pages/Cruds/CategoryPage.vue'),
       },
       {
-        path: '/team',
+        path: 'team',
         name: 'team',
         component: () => import('pages/TeamPage.vue'),
       },
