@@ -28,7 +28,7 @@ export const menuConfig: IMenu[] = [
       {
         name: 'Brinquedos',
         icon: 'toys',
-        path: '/admin/toys',
+        path: '/management/admin/toys',
         isDropdown: false,
       },
     ],
