@@ -68,7 +68,7 @@ const fetchCategories = async () => {
     return [];
   }
   Notify.create({
-    message: "Categorías cargadas correctamente",
+    message: "Categorías carregadas correctamente",
     color: "green",
     position: "top-right",
     timeout: 2000,

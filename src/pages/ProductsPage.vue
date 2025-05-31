@@ -10,7 +10,7 @@
     <section class="row q-col-gutter-lg q-gutter-y-lg justify-center">
       <div v-for="toy in toys" :key="toy.id || 0" class="col-xs-12 col-sm-6 col-md-4 col-lg-2 text-center">
         <div @click="goTo(toy.id || 0)">
-          <q-img :src="toy.photos[0]?.path" class="q-mb-md"
+          <q-img :src="toy.photos[0] ?.path" class="q-mb-md"
             style="max-height: 140px; object-fit: contain" fit="contain" />
           <div class="text-body1 text-weight-medium">{{ toy.name }}</div>
           <div class="text-green text-subtitle2 q-mt-xs">R$ {{ toy.price.toFixed(2) }}</div>

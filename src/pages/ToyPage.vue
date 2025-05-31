@@ -60,6 +60,17 @@
         <div class="text-h6 text-green text-weight-bold q-mb-lg">
           R$ {{ toy.price }}
         </div>
+
+        <q-btn
+          class="q-mt-xl home-btn animate-pulse"
+          color="green"
+          text-color="white"
+          icon="payments"
+          label="Comprar Agora"
+          unelevated
+          to="/"
+          no-caps
+        />
       </div>
       <!--Parte de detalhes do produto-->
       <section>
@@ -130,6 +141,8 @@ onMounted(async () => {
   toy.value = await fetchToy();
   console.log(toy.value);
 })
+
+
 </script>
 
 <style></style>
