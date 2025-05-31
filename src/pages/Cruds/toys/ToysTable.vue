@@ -118,27 +118,11 @@
             accept="image/*"
             label="Enviar imagens"
             multiple
-            @added="handleImageChange"
+            @added="onPhotoFilesAdded"
             flat
             bordered
             class="rounded-borders"
           />
-
-          <div v-if="imagePreviews.length" class="row q-col-gutter-sm q-mt-md">
-            <div
-              v-for="(src, index) in imagePreviews"
-              :key="index"
-              class="col-auto"
-            >
-              <q-img
-                :src="src"
-                alt="Pré-visualização"
-                :ratio="1"
-                class="rounded-borders shadow-1"
-                style="max-width: 100px"
-              />
-            </div>
-          </div>
 
           <InputComponent
             label="Título do Brinquedo"
@@ -281,14 +265,11 @@ const toy = ref<IToys>({
   photos: []
 })
 
-const photoFiles = ref<File[] | null>([]);
-const imagePreviews = ref<any>([])
+const photoFiles = ref<any[]>([]);
 
-const handleImageChange = (event: any) => {
-  const files: File[] = Array.from(event.target.files)
-  photoFiles.value = files
-  imagePreviews.value = files.map((file: any) => URL.createObjectURL(file))
-}
+const onPhotoFilesAdded = (files: readonly any[]) => {
+  photoFiles.value = Array.from(files);
+};
 
 const specInput = ref('')
 
@@ -312,15 +293,18 @@ const buildFormData = () => {
   formData.append('description', toy.value.description);
   formData.append('shortDescription', toy.value.shortDescription);
   if (toy.value.shortDescription.length > 0) {
-    formData.append('specifications', JSON.stringify(toy.value.specifications));
+
+    toy.value.specifications.forEach((spec) => {
+      formData.append('specifications', spec);
+    });
+
   } else {
     formData.append('specifications', "");
   }
 
   if (photoFiles.value) {
-    photoFiles.value.forEach((file, index) => {
+    photoFiles.value.forEach((file) => {
       formData.append('photos', file);
-      console.log(index)
     });
   }
   return formData;
@@ -440,6 +424,8 @@ const editToy = async () => {
 
 const createToy = async () => {
   const formData = buildFormData();
+  console.log(photoFiles.value);
+  console.log(formData.get('photos'));
   const res = await toysService.createToy(formData);
   if (res.status !== 201) {
     Notify.create({
