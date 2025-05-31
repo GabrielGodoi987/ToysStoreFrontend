@@ -17,9 +17,9 @@
 
       <div v-if="toys.length > 0" class="row q-col-gutter-lg justify-center">
         <div class="col-12 col-sm-6 col-md-3" v-for="(product, index) in toys"
-          :key="product.id ?? index" @click="goToToys(product.id)" style="cursor: pointer">
+          :key="product.id ?? index" @click="product.id !== null && product.id !== undefined ? goToToys(product.id) : null" style="cursor: pointer">
           <q-card flat bordered class="product-card">
-            <q-img :src="product.photos[0]" ratio="1" class="product-image" fit="contain" style="background: #fafafa" />
+            <q-img :src="typeof product.photos[0] === 'string' ? product.photos[0] : product.photos[0]?.path" ratio="1" class="product-image" fit="contain" style="background: #fafafa" />
             <q-card-section class="text-center q-pt-sm">
               <div class="text-subtitle1 text-weight-medium text-dark">{{ product.name }}</div>
               <div class="text-h6 text-weight-bolder text-green-8 q-mt-sm">

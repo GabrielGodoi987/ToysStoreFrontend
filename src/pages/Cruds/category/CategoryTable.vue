@@ -21,6 +21,7 @@
     >
       <template #content>
         <form @submit.prevent="editCategory">
+          {{ category }}
           <InputComponent 
             label="Editar nome" 
             v-model="category.name" 
@@ -226,12 +227,13 @@ const editCategory = async () => {
     return;
   }
 
-  const res = await categoryService.updateCategory(category.value.id, category.value);
+  const res = await categoryService.updateCategory(category.value.id, category.value.name);
   if (res.status !== 200) {
     Notify.create({ message: 'Erro ao editar categoria', color: 'negative' });
     return;
   }
 
+  
   Notify.create({ message: 'Categoria editada com sucesso', color: 'positive' });
   openEditDialog.value = false;
 };

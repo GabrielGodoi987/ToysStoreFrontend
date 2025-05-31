@@ -40,9 +40,11 @@ export class CategoryService {
     }
   }
 
-  public async updateCategory(id: number, category: FormData) {
+  public async updateCategory(id: number, categoryName: string) {
     try {
-      const response = await this.axiosApi.put(`/categories/${id}`, category);
+      console.log(categoryName);
+      const response = await this.axiosApi.put(`/categories/${id}`, categoryName);
+      console.log(response);
       return response;
     } catch (error) {
       console.error('Error updating category:', error);
