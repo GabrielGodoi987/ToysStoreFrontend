@@ -1,9 +1,8 @@
 <template>
   <q-page class="q-pa-md">
     <div>
-      <div class="text-h4 text-weight-bold q-mb-sm">Bonecos</div>
+      <div class="text-h4 text-weight-bold q-mb-sm">{{ catalog?.name }}</div>
       <div class="text-subtitle2 text-grey-7 q-mb-xl">
-        Reviva a magia de Toy Story com os incríveis bonecos dos personagens mais amados da franquia!
       </div>
     </div>
 
@@ -26,11 +25,14 @@ import type { IToys } from 'src/interfaces/IToys';
 import { ToysService } from 'src/services/ToysService';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import type { ICategory } from 'src/interfaces/ICategory';
 
 const toysService: ToysService = new ToysService("/toys");
+const catalogService: ToysService = new ToysService("/categories");
 const route = useRoute();
 const router = useRouter();
 const toys = ref<IToys[]>([]);
+const catalog = ref<ICategory>();
 
 
 
@@ -44,11 +46,15 @@ const fetchToys = async () => {
     console.error("Error fetching toys:", response);
     return [];
   }
+  console.log("Toys fetched successfully:", response.data);
   return response.data;
 }
 
 onMounted(async () => {
   toys.value = await fetchToys();
+  const cat = await catalogService.getById(Number(route.params.id));
+  catalog.value= cat.data;
+  console.log("Catalog fetched successfully:", catalog.value);
   console.log(toys.value);
 })
 </script>

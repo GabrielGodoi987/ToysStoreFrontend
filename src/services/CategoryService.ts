@@ -1,5 +1,6 @@
 import type { AxiosInstance } from 'axios';
 import { api } from 'src/boot/axios';
+import type { ICategory } from 'src/interfaces/ICategory';
 
 export class CategoryService {
   private axiosApi: AxiosInstance;
@@ -40,10 +41,13 @@ export class CategoryService {
     }
   }
 
-  public async updateCategory(id: number, categoryName: string) {
+  public async updateCategory(id: number, category: ICategory) {
+    console.log(JSON.stringify(category))
     try {
-      console.log(categoryName);
-      const response = await this.axiosApi.put(`/categories/${id}`, categoryName);
+      const response = await this.axiosApi.put(
+        `/categories/${id}`,
+        JSON.stringify({ name: category.name }),
+      );
       console.log(response);
       return response;
     } catch (error) {

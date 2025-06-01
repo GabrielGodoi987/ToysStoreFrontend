@@ -14,24 +14,23 @@
 
   <!-- EDITAR CATEGORIA -->
   <section v-if="category">
-    <CardModal 
-      :title="`Editar categoria ${category.name}`" 
-      back-dropfilter="blur(5px)" 
+    <CardModal
+      :title="`Editar categoria ${category.name}`"
+      back-dropfilter="blur(5px)"
       v-model:is-open="openEditDialog"
     >
       <template #content>
         <form @submit.prevent="editCategory">
-          {{ category }}
-          <InputComponent 
-            label="Editar nome" 
-            v-model="category.name" 
-            hint="Coloque o novo nome da categoria" 
+          <InputComponent
+            label="Editar nome"
+            v-model="category.name"
+            hint="Coloque o novo nome da categoria"
           />
           <div class="row justify-center q-mt-md">
-            <ConfirmActionButton 
-              label="Editar Categoria" 
-              color="secondary" 
-              @click="editCategory" 
+            <ConfirmActionButton
+              label="Editar Categoria"
+              color="secondary"
+              @click="editCategory"
             />
           </div>
         </form>
@@ -41,9 +40,9 @@
 
   <!-- DELETAR CATEGORIA -->
   <section>
-    <CardModal 
-      title="Exclusão de categoria" 
-      back-dropfilter="blur(5px)" 
+    <CardModal
+      title="Exclusão de categoria"
+      back-dropfilter="blur(5px)"
       v-model:is-open="openDeleteDialog"
     >
       <template #content>
@@ -52,10 +51,10 @@
             Tem certeza que quer deletar a categoria {{ category.name }}?
           </div>
           <div class="row justify-center q-mt-xl">
-            <ConfirmActionButton 
-              label="Excluir" 
-              color="negative" 
-              @click="deleteCategory" 
+            <ConfirmActionButton
+              label="Excluir"
+              color="negative"
+              @click="deleteCategory"
             />
           </div>
         </form>
@@ -65,21 +64,21 @@
 
   <!-- ADICIONAR CATEGORIA -->
   <section>
-    <CardModal 
-      title="Adicionar Categoria" 
+    <CardModal
+      title="Adicionar Categoria"
       :isOpen="createDialog"
     >
       <template #content>
         <form @submit.prevent="createCategory">
-          <InputComponent 
-            v-model="category.name" 
-            label="Nome da categoria" 
-            hint="Digite o nome da categoria" 
+          <InputComponent
+            v-model="category.name"
+            label="Nome da categoria"
+            hint="Digite o nome da categoria"
           />
 
           <q-file
             filled
-            v-model="category.file"
+            v-model="file"
             accept="image/*"
             label="Escolha uma imagem"
             @update:model-value="onFileChange"
@@ -90,10 +89,10 @@
           </div>
 
           <div class="row q-mt-lg justify-center">
-            <ConfirmActionButton 
-              label="Salvar" 
-              color="secondary" 
-              @click="createCategory" 
+            <ConfirmActionButton
+              label="Salvar"
+              color="secondary"
+              @click="createCategory"
             />
           </div>
         </form>
@@ -115,13 +114,13 @@ import ConfirmActionButton from 'src/components/buttons/ConfirmActionButton.vue'
 const categoryService: CategoryService = new CategoryService('/categories');
 const rows = ref<ICategory[]>([]);
 
-const category = ref<any>({
+const category = ref<ICategory>({
   id: null,
   name: '',
-  url: '',
-  file: null
+  url: ''
 });
 
+const file = ref<File | null>(null);
 const imagePreview = ref<string | null>(null);
 
 const createDialog = defineModel('createDialog', {
@@ -133,24 +132,15 @@ const createDialog = defineModel('createDialog', {
 const openEditDialog = ref<boolean>(false);
 const openDeleteDialog = ref<boolean>(false);
 
-const onFileChange = (file: File) => {
-  if (file) {
-    imagePreview.value = URL.createObjectURL(file);
-  } else {
-    imagePreview.value = null;
-  }
+const onFileChange = (selectedFile: File | null) => {
+  file.value = selectedFile;
+  imagePreview.value = selectedFile ? URL.createObjectURL(selectedFile) : null;
 };
 
 const openEditCategoryDialog = (id: number) => {
-  category.value = {
-    id: null,
-    name: '',
-    url: '',
-    file: null
-  };
   const element = rows.value.find(e => e.id === id);
   if (element) {
-    category.value = { ...element, file: null };
+    category.value = { ...element };
     openEditDialog.value = true;
   }
 };
@@ -158,7 +148,7 @@ const openEditCategoryDialog = (id: number) => {
 const openDeleteCategoryDialog = (id: number) => {
   const element = rows.value.find(e => e.id === id);
   if (element) {
-    category.value = element;
+    category.value = { ...element };
     openDeleteDialog.value = true;
   }
 };
@@ -178,17 +168,22 @@ const fetchCategories = async () => {
   }
 };
 
+const buildFormData = (data: ICategory, file?: File | null): FormData => {
+  const formData = new FormData();
+  formData.append('name', data.name);
+  if (file) formData.append('file', file);
+  return formData;
+};
+
 const createCategory = async () => {
-  if (!category.value.name || !category.value.file) {
+  if (!category.value.name || !file.value) {
     Notify.create({ message: 'Preencha todos os campos', color: 'negative', position: 'top-left' });
     return;
   }
 
-  const formData = new FormData();
-  formData.append('name', category.value.name);
-  formData.append('file', category.value.file);
-
+  const formData = buildFormData(category.value, file.value);
   const res = await categoryService.createCategory(formData);
+
   if (res.status !== 201) {
     Notify.create({ message: 'Categoria não foi criada', color: 'negative', position: 'top-left' });
     return;
@@ -199,7 +194,8 @@ const createCategory = async () => {
   rows.value.push(res.data);
   createDialog.value = false;
 
-  category.value = { id: null, name: '', url: '', file: null };
+  category.value = { id: null, name: '', url: '' };
+  file.value = null;
   imagePreview.value = null;
 };
 
@@ -227,15 +223,20 @@ const editCategory = async () => {
     return;
   }
 
-  const res = await categoryService.updateCategory(category.value.id, category.value.name);
+  const res = await categoryService.updateCategory(category.value.id, category.value);
   if (res.status !== 200) {
     Notify.create({ message: 'Erro ao editar categoria', color: 'negative' });
     return;
   }
 
-  
   Notify.create({ message: 'Categoria editada com sucesso', color: 'positive' });
   openEditDialog.value = false;
+
+  // Atualiza localmente
+  const index = rows.value.findIndex(e => e.id === category.value.id);
+  if (index !== -1) {
+    rows.value[index] = { ...category.value };
+  }
 };
 
 onMounted(async () => {
@@ -244,7 +245,8 @@ onMounted(async () => {
 
 watch(createDialog, (newVal, oldVal) => {
   if (newVal !== oldVal) {
-    category.value = { id: null, name: '', url: '', file: null };
+    category.value = { id: null, name: '', url: '' };
+    file.value = null;
     imagePreview.value = null;
   }
 });

@@ -1,11 +1,5 @@
 <template>
   <q-page class="q-pa-md">
-    <q-breadcrumbs class="text-grey-8 q-mb-md">
-      <q-breadcrumbs-el label="Catálogo" />
-      <q-breadcrumbs-el label="Bonecos" />
-      <q-breadcrumbs-el :label="toy?.name" class="text-bold" />
-    </q-breadcrumbs>
-
     <main class="row q-col-gutter-xl" v-if="toy">
       <!-- Coluna da imagem e miniaturas -->
       <div class="col-12 col-md-5">
