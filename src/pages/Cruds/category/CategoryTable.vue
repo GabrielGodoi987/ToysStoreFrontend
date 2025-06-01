@@ -223,7 +223,11 @@ const editCategory = async () => {
     return;
   }
 
-  const res = await categoryService.updateCategory(category.value.id, category.value);
+  const res = await categoryService.updateCategory(category.value.id, {
+    id: category.value.id,
+    name: category.value.name,
+    url: category.value.url
+  });
   if (res.status !== 200) {
     Notify.create({ message: 'Erro ao editar categoria', color: 'negative' });
     return;

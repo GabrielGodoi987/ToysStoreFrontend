@@ -42,13 +42,8 @@ export class CategoryService {
   }
 
   public async updateCategory(id: number, category: ICategory) {
-    console.log(JSON.stringify(category))
     try {
-      const response = await this.axiosApi.put(
-        `/categories/${id}`,
-        JSON.stringify({ name: category.name }),
-      );
-      console.log(response);
+      const response = await this.axiosApi.put(`/categories/${id}`, category);
       return response;
     } catch (error) {
       console.error('Error updating category:', error);
